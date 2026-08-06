@@ -1,0 +1,16 @@
+# Frontend
+node_modules/
+dist/
+.env
+.env.local
+
+# Backend
+venv/
+__pycache__/
+*.pyc
+*.db
+.env
+
+# Uploaded videos / model outputs (optional — decide if you want these tracked)
+backend/uploads/
+backend/storage/

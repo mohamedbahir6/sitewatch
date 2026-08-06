@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-bg: 250 251 252;
+  --c-panel: 255 255 255;
+  --c-ink: 15 23 42;
+  --c-inksoft: 100 116 139;
+  --c-border: 226 232 240;
+  --c-amber: 217 119 6;
+  --c-orange: 30 58 138;
+  --c-danger: 185 28 28;
+  --c-success: 21 128 61;
+}
+
+.dark {
+  --c-bg: 10 14 26;
+  --c-panel: 22 28 45;
+  --c-ink: 241 245 249;
+  --c-inksoft: 148 163 184;
+  --c-border: 44 53 74;
+  --c-amber: 251 191 36;
+  --c-orange: 96 165 250;
+  --c-danger: 248 113 113;
+  --c-success: 74 222 128;
+}
+
+html {
+  font-size: 18px;
+}
+
+html, body {
+  background-color: rgb(var(--c-bg));
+  color: rgb(var(--c-ink));
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+::selection {
+  background: rgb(var(--c-orange));
+  color: #FFFFFF;
+}
+
+.hazard-bar {
+  height: 4px;
+  width: 100%;
+  background-image: linear-gradient(90deg, #1E3A8A, #3B5BA5 45%, #D97706 100%);
+}
+
+.hazard-bar-animated {
+  height: 4px;
+  width: 100%;
+  background-image: linear-gradient(90deg, #1E3A8A, #3B5BA5 35%, #D97706 65%, #1E3A8A 100%);
+  background-size: 200% 100%;
+  animation: hazardSlide 6s linear infinite;
+}
+
+@keyframes hazardSlide {
+  from { background-position: 0 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up { animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-up-1 { animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
+.animate-fade-up-2 { animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both; }
+.animate-fade-up-3 { animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
+.animate-fade-up-4 { animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both; }
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -10px rgba(15, 23, 42, 0.15);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  position: relative;
+}
+.hover-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(30, 58, 138, 0.35),
+    0 0 18px rgba(30, 58, 138, 0.35),
+    0 0 36px rgba(96, 165, 250, 0.25);
+}
+.dark .hover-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, 0.45),
+    0 0 18px rgba(96, 165, 250, 0.45),
+    0 0 40px rgba(96, 165, 250, 0.3);
+}
+
+.hover-glow-dark {
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.hover-glow-dark:hover {
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, 0.45),
+    0 0 18px rgba(96, 165, 250, 0.45),
+    0 0 40px rgba(96, 165, 250, 0.3);
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-menu-in { animation: menuIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.progress-shimmer {
+  background-image: linear-gradient(90deg, #1E3A8A 0%, #D97706 50%, #1E3A8A 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spinSlow 1.4s linear infinite; }
+
+.upload-drop {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.upload-drop:hover {
+  transform: scale(1.005);
+  box-shadow: 0 12px 32px -14px rgba(15, 23, 42, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
