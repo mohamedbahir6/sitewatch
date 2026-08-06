@@ -1,97 +1,99 @@
-# SiteWatch — PPE Compliance Analysis
+# 🛡️ SiteWatch — PPE Compliance & Video Analysis
 
-Upload floor-camera video → your trained YOLO model flags Hardhat / Mask / Safety
-Vest violations → professional dashboard with charts + an AI assistant you can
-ask questions about the footage.
+**Every missing hardhat, caught on frame one.**
 
-Built for your dataset classes:
-`Hardhat, Mask, NO-Hardhat, NO-Mask, NO-Safety Vest, Person, Safety Cone, Safety Vest, machinery, vehicle`
+SiteWatch is a local-first video analysis platform that automatically detects Personal Protective Equipment (PPE) compliance on industrial and construction site footage using a custom-trained YOLO model, and supports general-purpose video analysis powered by Google Gemini.
 
+---
+
+## ✨ Features
+
+- **PPE Detection** — Upload site footage and get frame-by-frame detection of hardhats, vests, gloves, and other safety gear using a custom-trained YOLOv8 model.
+- **General Video Analysis** — Analyze any video (not just PPE) using the Gemini File API for open-ended, natural-language insights.
+- **Compliance Trends** — Track PPE compliance rates across multiple uploads over time with interactive charts.
+- **AI Chat Assistant** — Ask natural-language questions about an analyzed video using a Retrieval-Augmented Generation (RAG) chatbot.
+- **PDF Reports** — Export a professional compliance report for any analyzed video.
+- **Local-first** — Detection runs on your own machine with your own model weights; your video data never leaves your system.
+
+---
+
+## 🧱 Tech Stack
+
+**Frontend:** React, Vite, Tailwind CSS, Recharts, Lucide Icons
+**Backend:** FastAPI, SQLite, Ultralytics YOLO, OpenCV, ReportLab, ChromaDB
+**AI:** Google Gemini (`google-generativeai`, `google-genai`) for general analysis and the RAG chatbot
+
+---
+
+## 📁 Project Structure
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- A Google Gemini API key (for General Analysis & the AI chatbot)
+- A Gmail account with an [App Password](https://myaccount.google.com/apppasswords) (for email verification)
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/mohamedbahir6/sitewatch.git
+cd sitewatch
 ```
-ppe-detection-app/
-├── backend/          FastAPI + Ultralytics YOLO inference
-│   ├── app.py
-│   ├── detect.py
-│   ├── requirements.txt
-│   ├── .env.example
-│   └── models/best.pt   ← put your trained weights here
-└── frontend/          React + Vite + Tailwind dashboard
-```
 
-## 1. Backend setup
-
+### 2. Backend setup
 ```bash
 cd backend
 python -m venv venv
 venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Mac/Linux
+# source venv/bin/activate   # macOS/Linux
 
 pip install -r requirements.txt
-
-mkdir models
-# copy your trained best.pt into backend/models/best.pt
-
-copy .env.example .env       # Windows
-# cp .env.example .env       # Mac/Linux
 ```
 
-Edit `backend/.env`:
-- `PPE_MODEL_WEIGHTS` — path to `best.pt` (defaults to `./models/best.pt`)
-- `ANTHROPIC_API_KEY` — only needed if you want the AI chat assistant on the
-  dashboard to work. Get one at https://console.anthropic.com — without it,
-  everything else (upload, detection, dashboard, charts) still works fine.
+Copy `.env.example` to `.env` and fill in your own values:
+```bash
+copy .env.example .env       # Windows
+# cp .env.example .env       # macOS/Linux
+```
 
-Run it:
+Then run the backend:
 ```bash
 python app.py
 ```
-Backend runs at `http://localhost:8000`. Check `http://localhost:8000/api/health`
-— it tells you if your weights file was found.
+Backend runs at `http://localhost:8000`
 
-## 2. Frontend setup
-
+### 3. Frontend setup
+Open a new terminal:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open `http://localhost:5173`. It proxies `/api` calls to the backend automatically
-(see `vite.config.js`), so both servers must be running.
+Frontend runs at `http://localhost:5173`
 
-## 3. Using it
+---
 
-1. Drop a video on the upload screen.
-2. It uploads, then detection runs frame-by-frame (progress bar shown).
-3. Dashboard shows:
-   - Annotated video with live bounding boxes
-   - Overall compliance %, total violations, peak headcount, frames analyzed
-   - Compliant vs. violation bars per PPE category
-   - Violations-over-time chart (spot exactly when compliance broke down)
-   - Raw per-class detection counts
-   - Floating "Safety Assistant" — ask things like *"when did the first
-     violation happen?"* or *"is this site compliant overall?"* — it answers
-     grounded strictly in that video's analysis report.
+## 🖥️ How to Use
 
-## Performance notes
+1. **Sign up / Log in** — Create an account from the landing page (email verification via Gmail SMTP).
+2. **Upload a video** — On the Upload page, drag and drop a video (`MP4`, `MOV`, `AVI`) of site footage.
+3. **View the dashboard** — Once analysis finishes, see detected violations, compliance %, and an annotated video with bounding boxes.
+4. **Ask the AI assistant** — Use the chatbot on the dashboard to ask questions about the specific video's results.
+5. **Check Trends** — See compliance rates across all your past uploads over time.
+6. **Try General Analysis** — Upload any video for open-ended, Gemini-powered insights beyond PPE detection.
+7. **Export a report** — Download a PDF summary of any analyzed video.
 
-- `PPE_FRAME_SKIP` in `.env` controls how many frames are actually run through
-  the model (2 = every other frame). Raise it for faster processing on long
-  videos, lower it (1) for maximum smoothness/accuracy.
-- No GPU required, but detection is much faster with CUDA available — Ultralytics
-  will use it automatically if `torch` detects a compatible GPU.
-- Violation logic uses your dataset's own `NO-Hardhat` / `NO-Mask` /
-  `NO-Safety Vest` classes directly — no extra box-overlap heuristics needed.
+---
 
-## Extending
+## 🔒 Notes
 
-- **Multiple videos / history:** results are already saved per `video_id` under
-  `backend/storage/results/` — add a `/api/videos` list endpoint + a sidebar to
-  browse past reports.
-- **Real vector RAG across many videos:** the current assistant grounds itself
-  in a single video's JSON report (passed straight into the prompt — simplest
-  correct approach for one document). If you later want cross-video search,
-  embed each report and swap the flat JSON context in `app.py`'s `/api/chat`
-  for a vector similarity lookup.
-- **Mobile app:** the dashboard is fully responsive and works in any mobile
-  browser as-is. For a native app, the same `backend/app.py` API can be
-  reused — no changes needed there.
+- Detection runs locally using your own YOLO weights — no video data is sent anywhere except the specific frames/videos you choose to send to Gemini for General Analysis or the chat assistant.
+- Never commit your `.env` file — it contains your API keys and email credentials.
+
+---
+
+## 📌 Status
+
+Built as a personal project to explore computer-vision-based safety compliance monitoring, combining a custom-trained detection model with LLM-powered analysis and RAG.
